@@ -3,6 +3,10 @@ import java.util.*;
 
 public class FileSimilarity {
     static Map<String, List<Long>> fileFingerprints = new HashMap<>();
+
+    public synchronized static void synchronizedSum(String path, List<Long> fingerprint){
+        fileFingerprints.put(path, fingerprint);
+    }
     public static void main(String[] args) throws Exception {
         if (args.length < 2) {
             System.err.println("Usage: java Sum filepath1 filepath2 filepathN");
@@ -34,6 +38,7 @@ public class FileSimilarity {
 
     static class MinhasThreads implements Runnable{
         String caminho;
+        int semaphore = 1;
         public MinhasThreads(String filepath){
         caminho = filepath;
 
@@ -42,7 +47,7 @@ public class FileSimilarity {
         public void run(){
             try{
                 List<Long> fingerprint = fileSum(caminho);
-                fileFingerprints.put(caminho, fingerprint);
+                synchronizedSum(caminho, fingerprint);
 
             } catch(Exception e){
 
