@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class FileSimilarity {
-
+    static Map<String, List<Long>> fileFingerprints = new HashMap<>();
     public static void main(String[] args) throws Exception {
         if (args.length < 2) {
             System.err.println("Usage: java Sum filepath1 filepath2 filepathN");
@@ -10,15 +10,13 @@ public class FileSimilarity {
         }
 
         // Create a map to store the fingerprint for each file
-        Map<String, List<Long>> fileFingerprints = new HashMap<>();
+        
 
         // Calculate the fingerprint for each file
         for (String path : args) {
             Thread myThread = new Thread(new MinhasThreads(path));
             myThread.start();
-            List<Long> fingerprint = fileSum(path);
             myThread.join();
-            fileFingerprints.put(path, fingerprint);
         }
 
         // Compare each pair of files
@@ -43,7 +41,9 @@ public class FileSimilarity {
         @Override
         public void run(){
             try{
-                fileSum(caminho);
+                List<Long> fingerprint = fileSum(caminho);
+                fileFingerprints.put(caminho, fingerprint);
+
             } catch(Exception e){
 
             }
